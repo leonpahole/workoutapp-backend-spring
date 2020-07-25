@@ -16,9 +16,6 @@ public class ExerciseDto {
     private Long id;
 
     private String name;
-    private String description;
-
-    private String photoUrl;
 
     private String category;
 
@@ -26,12 +23,10 @@ public class ExerciseDto {
 
     private Instant createdAt;
 
-    public ExerciseDto(Long id, String name, String description, String photoUrl, ExerciseCategory category,
+    public ExerciseDto(Long id, String name, ExerciseCategory category,
             Long authorId, Instant createdAt) {
         this.id = id;
         this.name = name;
-        this.description = description;
-        this.photoUrl = photoUrl;
         this.category = category.getCode();
         this.authorId = authorId;
         this.createdAt = createdAt;

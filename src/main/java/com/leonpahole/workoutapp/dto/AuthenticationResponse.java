@@ -9,4 +9,5 @@ import lombok.Data;
 @Builder
 public class AuthenticationResponse {
     private final String token;
+    private final UserProfile user;
 }

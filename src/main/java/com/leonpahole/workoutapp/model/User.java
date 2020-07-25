@@ -43,6 +43,8 @@ public class User {
 
     private boolean enabled;
 
+    private WeightUnit weightUnit;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Workout> workouts;
 }

@@ -21,6 +21,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: leon@gmail.com
       PGADMIN_DEFAULT_PASSWORD: user
+    volumes:
+      - admdata:/var/lib/pgadmin
 
 volumes:
   dbdata:
+  admdata:

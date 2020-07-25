@@ -29,6 +29,7 @@ public class JwtProvider implements Serializable {
     public String generateToken(String email) {
         return Jwts.builder().setSubject(email).setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                // todo: expire jwts
                 .signWith(signatureAlgorithm, secret).compact();
     }
 

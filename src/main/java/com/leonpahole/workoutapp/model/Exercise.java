@@ -29,10 +29,6 @@ public class Exercise {
     @NotBlank
     private String name;
 
-    private String photoUrl;
-
-    private String description;
-
     private Instant createdAt;
 
     @NotNull

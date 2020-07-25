@@ -56,7 +56,14 @@ public class UserService {
 
     private AuthenticationResponse generateTokenAndAuthenticationResponse(String email) {
         String token = jwtProvider.generateToken(email);
-        return AuthenticationResponse.builder().token(token).build();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApplicationException("User not found in the database"));
+
+        UserProfile userProfile = new UserProfile();
+        userProfile.setEmail(user.getEmail());
+        userProfile.setName(user.getName());
+        userProfile.setId(user.getId());
+        return AuthenticationResponse.builder().token(token).user(userProfile).build();
     }
 
     public UserProfile getCurrentUserProfile() {

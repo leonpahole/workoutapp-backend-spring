@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
-    @Query("SELECT NEW com.leonpahole.workoutapp.dto.ExerciseDto(e.id, e.name, e.description, e.photoUrl, e.category, e.author.id, e.createdAt) FROM Exercise e WHERE e.author.id = :authorId OR e.author IS NULL ORDER BY e.createdAt DESC")
+    @Query("SELECT NEW com.leonpahole.workoutapp.dto.ExerciseDto(e.id, e.name, e.category, e.author.id, e.createdAt) FROM Exercise e WHERE e.author.id = :authorId OR e.author IS NULL ORDER BY e.createdAt DESC")
     List<ExerciseDto> findAllByAuthorIdOrNullAuthorId(@Param("authorId") Long authorId);
 
     Optional<Exercise> findByIdAndAuthorId(Long id, Long authorId);

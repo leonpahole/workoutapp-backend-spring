@@ -27,6 +27,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (RuntimeException ex) {
 
+            ex.printStackTrace();
             HttpStatus exStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
             if (ex instanceof JwtException) {

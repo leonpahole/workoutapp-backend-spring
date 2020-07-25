@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
-    List<Workout> findAllByUserId(Long id);
+    List<Workout> findAllByUserIdOrderByCreatedAtDesc(Long id);
 }

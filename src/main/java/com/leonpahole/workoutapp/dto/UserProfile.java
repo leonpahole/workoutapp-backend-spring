@@ -3,10 +3,12 @@ package com.leonpahole.workoutapp.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class UserProfile {
     private Long id;
     private String name;

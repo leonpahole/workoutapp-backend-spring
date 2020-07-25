@@ -11,5 +11,4 @@ public class ExercisePerformedSetsDto {
     private Integer repetitions;
     private Integer time;
     private Double weight;
-    private String weightUnit;
 }

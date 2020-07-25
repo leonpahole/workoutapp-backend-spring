@@ -16,8 +16,6 @@ public class ExercisePerformedDto {
     @NotNull
     Long exerciseId;
 
-    Boolean noSets;
-
     @NotNull
     List<ExercisePerformedSetsDto> sets;
 }

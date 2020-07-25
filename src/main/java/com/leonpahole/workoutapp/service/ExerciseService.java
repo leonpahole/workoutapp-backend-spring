@@ -25,8 +25,9 @@ public class ExerciseService {
 
     @Transactional
     public ExerciseDto createExercise(CreateExerciseRequest createExerciseRequest) {
-        Exercise exercise = Exercise.builder().name(createExerciseRequest.getName())
-                .description(createExerciseRequest.getDescription()).author(userService.getCurrentUser())
+        Exercise exercise = Exercise.builder()
+                .name(createExerciseRequest.getName())
+                .author(userService.getCurrentUser())
                 .category(ExerciseCategory.of(createExerciseRequest.getCategory())).createdAt(Instant.now()).build();
         exerciseRepository.save(exercise);
         return exerciseToExerciseDto(exercise);
@@ -48,8 +49,10 @@ public class ExerciseService {
     @Transactional
     private ExerciseDto exerciseToExerciseDto(Exercise exercise) {
         User author = exercise.getAuthor();
-        return ExerciseDto.builder().name(exercise.getName()).id(exercise.getId())
-                .description(exercise.getDescription()).authorId(author == null ? null : author.getId())
+        return ExerciseDto.builder()
+                .name(exercise.getName())
+                .id(exercise.getId())
+                .authorId(author == null ? null : author.getId())
                 .createdAt(exercise.getCreatedAt()).category(exercise.getCategory().getCode()).build();
     }
 

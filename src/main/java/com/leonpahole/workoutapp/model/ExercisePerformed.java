@@ -43,9 +43,6 @@ public class ExercisePerformed {
     @Column(name = "exercise_order")
     private Integer order;
 
-    @NotNull
-    private Boolean noSets;
-
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_performed_id")
     private List<ExercisePerformedSet> exercisePerformedSets;

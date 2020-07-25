@@ -15,7 +15,6 @@ import com.leonpahole.workoutapp.model.Exercise;
 import com.leonpahole.workoutapp.model.ExercisePerformed;
 import com.leonpahole.workoutapp.model.ExercisePerformedSet;
 import com.leonpahole.workoutapp.model.User;
-import com.leonpahole.workoutapp.model.WeightUnit;
 import com.leonpahole.workoutapp.model.Workout;
 import com.leonpahole.workoutapp.repository.ExercisePerformedRepository;
 import com.leonpahole.workoutapp.repository.ExercisePerformedSetRepository;
@@ -73,8 +72,9 @@ public class WorkoutService {
         Workout workout = new Workout();
         workout.setName(workoutDto.getName());
         workout.setComment(workoutDto.getComment());
-        workout.setStartedAt(workoutDto.getStartedAt().toInstant());
-        workout.setEndedAt(workoutDto.getEndedAt().toInstant());
+        workout.setStartDate(workoutDto.getStartDate().toInstant());
+        workout.setStartTime(workoutDto.getStartTime().toInstant());
+        workout.setEndTime(workoutDto.getEndTime().toInstant());
         workout.setCreatedAt(Instant.now());
 
         List<ExercisePerformed> exercisesPerformed = new ArrayList<>();
@@ -82,8 +82,6 @@ public class WorkoutService {
         int exerciseOrder = 1;
         for (ExercisePerformedDto exercisePerfomedDto : workoutDto.getExercisesPerformed()) {
             ExercisePerformed exercisePerformed = new ExercisePerformed();
-            Boolean noSets = exercisePerfomedDto.getNoSets();
-            exercisePerformed.setNoSets(noSets == null ? false : noSets);
             exercisePerformed.setOrder(exerciseOrder++);
             exercisePerformed.setExerciseId(exercisePerfomedDto.getExerciseId());
 
@@ -96,7 +94,6 @@ public class WorkoutService {
                 set.setRepetitions(exercisePerfomedSetDto.getRepetitions());
                 set.setTime(exercisePerfomedSetDto.getTime());
                 set.setWeight(exercisePerfomedSetDto.getWeight());
-                set.setWeightUnit(WeightUnit.of(exercisePerfomedSetDto.getWeightUnit()));
 
                 exercisePerformedSets.add(set);
             }
@@ -117,7 +114,7 @@ public class WorkoutService {
     }
 
     public List<WorkoutDto> getWorkouts() {
-        List<Workout> workouts = workoutRepository.findAllByUserId(userService.getCurrentUser().getId());
+        List<Workout> workouts = workoutRepository.findAllByUserIdOrderByCreatedAtDesc(userService.getCurrentUser().getId());
         return workouts.stream().map(this::workoutToWorkoutDto).collect(Collectors.toList());
     }
 
@@ -125,8 +122,10 @@ public class WorkoutService {
         WorkoutDto workoutDto = new WorkoutDto();
         workoutDto.setName(workout.getName());
         workoutDto.setComment(workout.getComment());
-        workoutDto.setStartedAt(Date.from(workout.getCreatedAt()));
-        workoutDto.setEndedAt(Date.from(workout.getEndedAt()));
+        workoutDto.setCreatedAt(Date.from(workout.getCreatedAt()));
+        workoutDto.setStartDate(Date.from(workout.getStartDate()));
+        workoutDto.setStartTime(Date.from(workout.getStartTime()));
+        workoutDto.setEndTime(Date.from(workout.getEndTime()));
 
         List<ExercisePerformedDto> exercisesPerformedDto = new ArrayList<>();
 
@@ -134,7 +133,6 @@ public class WorkoutService {
 
             ExercisePerformedDto exercisePerformedDto = new ExercisePerformedDto();
             exercisePerformedDto.setExerciseId(exercisePerformed.getExercise().getId());
-            exercisePerformedDto.setNoSets(exercisePerformed.getNoSets());
 
             List<ExercisePerformedSetsDto> exercisePerformedSetsDto = new ArrayList<>();
 
@@ -144,9 +142,6 @@ public class WorkoutService {
                 exercisePerformedSetDto.setRepetitions(exercisePerformedSet.getRepetitions());
                 exercisePerformedSetDto.setTime(exercisePerformedSet.getTime());
                 exercisePerformedSetDto.setWeight(exercisePerformedSet.getWeight());
-
-                WeightUnit weightUnit = exercisePerformedSet.getWeightUnit();
-                exercisePerformedSetDto.setWeightUnit(weightUnit == null ? null : weightUnit.getCode());
 
                 exercisePerformedSetsDto.add(exercisePerformedSetDto);
             }

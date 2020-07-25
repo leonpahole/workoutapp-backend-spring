@@ -18,11 +18,17 @@ public class WorkoutDto {
 
     private String comment;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private Date startedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd. MM. yyyy HH:mm")
+    private Date createdAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private Date endedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd. MM. yyyy")
+    private Date startDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    private Date startTime;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    private Date endTime;
 
     private List<ExercisePerformedDto> exercisesPerformed;
 }

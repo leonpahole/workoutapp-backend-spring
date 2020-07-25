@@ -13,8 +13,6 @@ public class CreateExerciseRequest {
     @NotNull
     private String name;
 
-    private String description;
-
     @NotNull
     private String category;
 }

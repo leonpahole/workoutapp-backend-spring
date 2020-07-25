@@ -17,6 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+class CreateWorkoutResponse {
+    long id;
+}
 
 @RestController
 @RequestMapping("/workout")
@@ -26,9 +33,9 @@ public class WorkoutController {
     private final WorkoutService workoutService;
 
     @PostMapping
-    public ResponseEntity<Long> createWorkout(@RequestBody @Valid WorkoutDto workout) {
+    public ResponseEntity<CreateWorkoutResponse> createWorkout(@RequestBody @Valid WorkoutDto workout) {
         Long createdWorkoutId = workoutService.createWorkout(workout);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdWorkoutId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateWorkoutResponse(createdWorkoutId));
     }
 
     @GetMapping

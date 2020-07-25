@@ -3,6 +3,7 @@ package com.leonpahole.workoutapp.model;
 import java.time.Instant;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,10 +38,16 @@ public class Workout {
     private Instant createdAt;
 
     @NotNull
-    private Instant startedAt;
+    @Column(columnDefinition = "DATE")
+    private Instant startDate;
 
     @NotNull
-    private Instant endedAt;
+    @Column(columnDefinition = "TIME")
+    private Instant startTime;
+
+    @NotNull
+    @Column(columnDefinition = "TIME")
+    private Instant endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

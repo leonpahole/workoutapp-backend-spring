@@ -29,13 +29,11 @@ public class ExercisePerformedSet {
     private ExercisePerformed exercisePerformed;
 
     @NotNull
-    @Column(name = "exercise_order")
+    @Column(name = "set_order")
     private Integer order;
 
     private Integer repetitions;
     private Integer time; // in seconds ALWAYS
 
     private Double weight;
-
-    private WeightUnit weightUnit;
 }
