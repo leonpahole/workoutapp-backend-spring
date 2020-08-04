@@ -39,6 +39,8 @@ public class ExercisePerformed {
     @Transient
     private Long exerciseId;
 
+    private Integer rest;
+
     @NotNull
     @Column(name = "exercise_order")
     private Integer order;

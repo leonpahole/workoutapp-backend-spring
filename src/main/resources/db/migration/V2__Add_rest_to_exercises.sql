@@ -1,0 +1,1 @@
+alter table exercise_performed add rest int4;

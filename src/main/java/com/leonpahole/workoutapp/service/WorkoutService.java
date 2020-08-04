@@ -73,8 +73,8 @@ public class WorkoutService {
         workout.setName(workoutDto.getName());
         workout.setComment(workoutDto.getComment());
         workout.setStartDate(workoutDto.getStartDate().toInstant());
-        workout.setStartTime(workoutDto.getStartTime().toInstant());
-        workout.setEndTime(workoutDto.getEndTime().toInstant());
+        workout.setStartTime(workoutDto.getStartTime() == null ? null : workoutDto.getStartTime().toInstant());
+        workout.setEndTime(workoutDto.getEndTime() == null ? null : workoutDto.getEndTime().toInstant());
         workout.setCreatedAt(Instant.now());
 
         List<ExercisePerformed> exercisesPerformed = new ArrayList<>();
@@ -84,6 +84,7 @@ public class WorkoutService {
             ExercisePerformed exercisePerformed = new ExercisePerformed();
             exercisePerformed.setOrder(exerciseOrder++);
             exercisePerformed.setExerciseId(exercisePerfomedDto.getExerciseId());
+            exercisePerformed.setRest(exercisePerfomedDto.getRest());
 
             List<ExercisePerformedSet> exercisePerformedSets = new ArrayList<>();
 
@@ -120,12 +121,13 @@ public class WorkoutService {
 
     private WorkoutDto workoutToWorkoutDto(Workout workout) {
         WorkoutDto workoutDto = new WorkoutDto();
+        workoutDto.setId(workout.getId());
         workoutDto.setName(workout.getName());
         workoutDto.setComment(workout.getComment());
         workoutDto.setCreatedAt(Date.from(workout.getCreatedAt()));
         workoutDto.setStartDate(Date.from(workout.getStartDate()));
-        workoutDto.setStartTime(Date.from(workout.getStartTime()));
-        workoutDto.setEndTime(Date.from(workout.getEndTime()));
+        workoutDto.setStartTime(workout.getStartTime() == null ? null : Date.from(workout.getStartTime()));
+        workoutDto.setEndTime(workout.getEndTime() == null ? null : Date.from(workout.getEndTime()));
 
         List<ExercisePerformedDto> exercisesPerformedDto = new ArrayList<>();
 
@@ -133,6 +135,7 @@ public class WorkoutService {
 
             ExercisePerformedDto exercisePerformedDto = new ExercisePerformedDto();
             exercisePerformedDto.setExerciseId(exercisePerformed.getExercise().getId());
+            exercisePerformedDto.setRest(exercisePerformed.getRest());
 
             List<ExercisePerformedSetsDto> exercisePerformedSetsDto = new ArrayList<>();
 

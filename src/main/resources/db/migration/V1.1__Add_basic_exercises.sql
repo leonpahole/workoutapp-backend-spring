@@ -19,7 +19,7 @@ VALUES
 ('BW' , NOW(), 'Assisted one handed push up'),
 ('BW' , NOW(), 'Inverted rows'),
 ('BW' , NOW(), 'Front lever tuck rows'),
-('TIM' , NOW(), 'Plank'),
+('BW' , NOW(), 'Plank'),
 ('CA' , NOW(), 'Hill walking'),
 ('CA' , NOW(), 'Stationary bike'),
 ('CA' , NOW(), 'Jogging'),

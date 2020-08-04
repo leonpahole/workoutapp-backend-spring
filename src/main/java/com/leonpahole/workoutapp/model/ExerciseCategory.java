@@ -11,7 +11,7 @@ import lombok.Getter;
 // there is a direct mapping from category to type
 @AllArgsConstructor
 public enum ExerciseCategory {
-    STRENGTH("STR"), BODYWEIGHT("BW"), STRETCHING("ST"), CARDIO("CA"), TIMED("TIM");
+    STRENGTH("STR"), BODYWEIGHT("BW"), STRETCHING("ST"), CARDIO("CA"), TIMED("TIM"), WEIGHTED_TIMED("WTIM");
 
     @Getter
     private String code;

@@ -41,11 +41,9 @@ public class Workout {
     @Column(columnDefinition = "DATE")
     private Instant startDate;
 
-    @NotNull
     @Column(columnDefinition = "TIME")
     private Instant startTime;
 
-    @NotNull
     @Column(columnDefinition = "TIME")
     private Instant endTime;
 

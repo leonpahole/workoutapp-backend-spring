@@ -1,18 +1,21 @@
 package com.leonpahole.workoutapp.dto;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateExerciseRequest {
-    @NotNull
-    private String name;
+public class WorkoutTemplateExerciseDto {
+
+    private Integer rest;
 
     @NotNull
-    private String category;
+    private Integer sequenceNumber;
+
+    @NotNull
+    Long exerciseId;
 }

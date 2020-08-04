@@ -35,7 +35,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
             final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
+        ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY);
 
         final List<String> errors = new ArrayList<String>();
 

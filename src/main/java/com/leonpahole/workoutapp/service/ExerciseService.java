@@ -3,7 +3,8 @@ package com.leonpahole.workoutapp.service;
 import java.time.Instant;
 import java.util.List;
 
-import com.leonpahole.workoutapp.dto.CreateExerciseRequest;
+
+import com.leonpahole.workoutapp.dto.CreateOrEditExerciseRequest;
 import com.leonpahole.workoutapp.dto.ExerciseDto;
 import com.leonpahole.workoutapp.errors.ApplicationException;
 import com.leonpahole.workoutapp.model.Exercise;
@@ -24,7 +25,7 @@ public class ExerciseService {
     private final UserService userService;
 
     @Transactional
-    public ExerciseDto createExercise(CreateExerciseRequest createExerciseRequest) {
+    public ExerciseDto createExercise(CreateOrEditExerciseRequest createExerciseRequest) {
         Exercise exercise = Exercise.builder()
                 .name(createExerciseRequest.getName())
                 .author(userService.getCurrentUser())
@@ -56,9 +57,21 @@ public class ExerciseService {
                 .createdAt(exercise.getCreatedAt()).category(exercise.getCategory().getCode()).build();
     }
 
-    public void deleteExerciseById(Long exerciseId) {
+    public ExerciseDto deleteExerciseById(Long exerciseId) {
         Exercise exercise = exerciseRepository.findByIdAndAuthorId(exerciseId, userService.getCurrentUser().getId())
-                .orElseThrow(() -> new ApplicationException("Exercise not found or you are unatuhorized to delete it"));
+                .orElseThrow(() -> new ApplicationException("Exercise " + exerciseId + " not found or you are unatuhorized to delete it"));
         exerciseRepository.delete(exercise);
+        return exerciseToExerciseDto(exercise);
+    }
+
+    public ExerciseDto updateExerciseById(Long exerciseId, CreateOrEditExerciseRequest editRequest) {
+        Exercise exercise = exerciseRepository.findByIdAndAuthorId(exerciseId, userService.getCurrentUser().getId())
+                .orElseThrow(() -> new ApplicationException("Exercise " + exerciseId + " not found or you are unatuhorized to update it"));
+    
+        exercise.setName(editRequest.getName());
+        exercise.setCategory(ExerciseCategory.of(editRequest.getCategory()));
+        exerciseRepository.save(exercise);
+        
+        return exerciseToExerciseDto(exercise);
     }
 }

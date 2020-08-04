@@ -1,7 +1,5 @@
 package com.leonpahole.workoutapp.dto;
 
-import java.util.List;
-
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -11,13 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExercisePerformedDto {
+public class CreateOrEditExerciseRequest {
+    @NotNull
+    private String name;
 
     @NotNull
-    Long exerciseId;
-
-    @NotNull
-    List<ExercisePerformedSetsDto> sets;
-
-    Integer rest;
+    private String category;
 }
