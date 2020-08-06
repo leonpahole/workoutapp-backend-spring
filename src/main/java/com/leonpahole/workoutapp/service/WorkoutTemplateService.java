@@ -26,11 +26,8 @@ public class WorkoutTemplateService {
 
     @Transactional
     public Long createWorkoutTemplate(WorkoutTemplateDto workoutTemplate) {
+
         WorkoutTemplate createdWorkoutTemplate = workoutTemplateDtoToWorkoutTemplate(workoutTemplate);
-        User currentUser = userService.getCurrentUser();
-        createdWorkoutTemplate.setUser(currentUser);
-        createdWorkoutTemplate.setCreatedAt(Instant.now());
-        workoutTemplateRepository.save(createdWorkoutTemplate);
 
         HashMap<Long, Exercise> allExercises = new HashMap<>();
 
@@ -42,6 +39,11 @@ public class WorkoutTemplateService {
                 allExercises.put(workoutTemplateExercise.getExerciseId(), currentExercise);
             }
         }
+
+        User currentUser = userService.getCurrentUser();
+        createdWorkoutTemplate.setUser(currentUser);
+        createdWorkoutTemplate.setCreatedAt(Instant.now());
+        workoutTemplateRepository.save(createdWorkoutTemplate);
 
         for (WorkoutTemplateExercise workoutTemplateExercise : createdWorkoutTemplate.getTemplateExercises()) {
             workoutTemplateExercise.setTemplate(createdWorkoutTemplate);
@@ -74,7 +76,7 @@ public class WorkoutTemplateService {
     }
 
     public WorkoutTemplateDto getWorkoutTemplate(Long id) {
-        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findById(id)
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findByIdAndUserId(id, userService.getCurrentUser().getId())
                 .orElseThrow(() -> new ApplicationException("Workout with id " + id + " not found"));
         return workoutTemplateToWorkoutTemplateDto(workoutTemplate);
     }
@@ -141,7 +143,7 @@ public class WorkoutTemplateService {
             }
         }
 
-        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findById(id)
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findByIdAndUserId(id, userService.getCurrentUser().getId())
                 .orElseThrow(() -> new ApplicationException("Workout template with id " + id + " not found"));
 
         workoutTemplate.setName(updateRequest.getName());

@@ -3,9 +3,8 @@ package com.leonpahole.workoutapp.service;
 import java.time.Instant;
 import java.util.Optional;
 
+import com.leonpahole.workoutapp.controller.UserController;
 import com.leonpahole.workoutapp.dto.AuthenticationResponse;
-import com.leonpahole.workoutapp.dto.LoginRequest;
-import com.leonpahole.workoutapp.dto.RegisterRequest;
 import com.leonpahole.workoutapp.dto.UserProfile;
 import com.leonpahole.workoutapp.errors.ApplicationException;
 import com.leonpahole.workoutapp.errors.UserWithEmailExistsException;
@@ -13,6 +12,7 @@ import com.leonpahole.workoutapp.model.User;
 import com.leonpahole.workoutapp.repository.UserRepository;
 import com.leonpahole.workoutapp.security.JwtProvider;
 
+import org.hibernate.sql.Update;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +33,7 @@ public class UserService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public AuthenticationResponse register(RegisterRequest registerRequest) {
+    public AuthenticationResponse register(UserController.RegisterRequest registerRequest) {
 
         Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
         if (existingUser.isPresent()) {
@@ -47,7 +47,7 @@ public class UserService {
         return generateTokenAndAuthenticationResponse(registerRequest.getEmail());
     }
 
-    public AuthenticationResponse login(LoginRequest loginRequest) {
+    public AuthenticationResponse login(UserController.LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -81,4 +81,22 @@ public class UserService {
                 .orElseThrow(() -> new ApplicationException("User with email " + currentUserEmail + " does not exist"));
     }
 
+    @Transactional
+    public void updateUser(UserController.UpdateUserRequest updateUserRequest) {
+        User currentUser = getCurrentUser();
+        if(updateUserRequest.getName() != null && !updateUserRequest.getName().isEmpty()) {
+            currentUser.setName(updateUserRequest.getName());
+        }
+
+        if(updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
+            currentUser.setPassword(updateUserRequest.getPassword());
+        }
+
+        userRepository.save(currentUser);
+    }
+
+    public void deleteUser() {
+        User currentUser = getCurrentUser();
+        userRepository.delete(currentUser);
+    }
 }

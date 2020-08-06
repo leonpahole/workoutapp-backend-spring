@@ -38,7 +38,7 @@ public class WorkoutTemplateController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorkoutTemplateDto> getWorkoutById(@PathVariable("id") Long workoutTemplateId) {
+    public ResponseEntity<WorkoutTemplateDto> getWorkoutTemplateById(@PathVariable("id") Long workoutTemplateId) {
         return ResponseEntity.status(HttpStatus.OK).body(workoutTemplateService.getWorkoutTemplate(workoutTemplateId));
     }
 
