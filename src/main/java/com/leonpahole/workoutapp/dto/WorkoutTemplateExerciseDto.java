@@ -17,5 +17,5 @@ public class WorkoutTemplateExerciseDto {
     private Integer sequenceNumber;
 
     @NotNull
-    Long exerciseId;
+    private Long exerciseId;
 }

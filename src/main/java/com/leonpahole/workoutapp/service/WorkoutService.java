@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.leonpahole.workoutapp.controller.WorkoutController;
 import com.leonpahole.workoutapp.dto.ExercisePerformedDto;
 import com.leonpahole.workoutapp.dto.ExercisePerformedSetsDto;
 import com.leonpahole.workoutapp.dto.WorkoutDto;
+import com.leonpahole.workoutapp.dto.WorkoutTemplateDto;
 import com.leonpahole.workoutapp.errors.ApplicationException;
 import com.leonpahole.workoutapp.model.Exercise;
 import com.leonpahole.workoutapp.model.ExercisePerformed;
@@ -35,9 +37,10 @@ public class WorkoutService {
     private final ExercisePerformedSetRepository exercisePerformedSetRepository;
     private final ExerciseRepository exerciseRepository;
     private final UserService userService;
+    private final WorkoutTemplateService workoutTemplateService;
 
     @Transactional
-    public Long createWorkout(WorkoutDto workout) {
+    public WorkoutController.CreateWorkoutResponse createWorkout(WorkoutDto workout) {
         Workout createdWorkout = workoutDtoToWorkout(workout);
         User currentUser = userService.getCurrentUser();
         createdWorkout.setUser(currentUser);
@@ -65,7 +68,13 @@ public class WorkoutService {
             }
         }
 
-        return createdWorkout.getId();
+        Long templateId = null;
+        if (workout.getSaveAsTemplate()) {
+            WorkoutTemplateDto template = workoutTemplateService.workoutDtoToWorkoutTemplateDto(workout);
+            templateId = workoutTemplateService.createWorkoutTemplate(template);
+        }
+
+        return new WorkoutController.CreateWorkoutResponse(createdWorkout.getId(), templateId);
     }
 
     private Workout workoutDtoToWorkout(WorkoutDto workoutDto) {

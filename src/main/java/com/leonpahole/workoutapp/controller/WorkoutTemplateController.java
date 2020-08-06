@@ -41,4 +41,17 @@ public class WorkoutTemplateController {
     public ResponseEntity<WorkoutTemplateDto> getWorkoutById(@PathVariable("id") Long workoutTemplateId) {
         return ResponseEntity.status(HttpStatus.OK).body(workoutTemplateService.getWorkoutTemplate(workoutTemplateId));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CreateWorkoutTemplateResponse> updateWorkoutTemplate(@PathVariable("id") Long workoutTemplateId,
+                                                                               @RequestBody @Valid WorkoutTemplateDto template) {
+        Long updatedTemplateId = workoutTemplateService.updateWorkoutTemplate(workoutTemplateId, template);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateWorkoutTemplateResponse(updatedTemplateId));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CreateWorkoutTemplateResponse> deleteWorkoutTemplate(@PathVariable("id") Long workoutTemplateId) {
+        Long deletedTemplateId = workoutTemplateService.deleteWorkoutTemplate(workoutTemplateId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateWorkoutTemplateResponse(deletedTemplateId));
+    }
 }

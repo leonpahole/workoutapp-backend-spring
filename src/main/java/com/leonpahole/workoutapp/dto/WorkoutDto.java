@@ -18,6 +18,8 @@ public class WorkoutDto {
 
     private Long id;
 
+    private Boolean saveAsTemplate = false;
+
     private String name;
 
     private String comment;

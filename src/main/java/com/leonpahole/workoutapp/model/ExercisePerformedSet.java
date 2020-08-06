@@ -36,6 +36,4 @@ public class ExercisePerformedSet {
     private Integer time; // in seconds ALWAYS
 
     private Double weight;
-
-    private Integer rest; // in seconds ALWAYS
 }

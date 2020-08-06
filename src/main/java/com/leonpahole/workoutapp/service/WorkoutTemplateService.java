@@ -5,6 +5,7 @@ import com.leonpahole.workoutapp.errors.ApplicationException;
 import com.leonpahole.workoutapp.model.*;
 import com.leonpahole.workoutapp.repository.*;
 import lombok.AllArgsConstructor;
+import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class WorkoutTemplateService {
         WorkoutTemplate createdWorkoutTemplate = workoutTemplateDtoToWorkoutTemplate(workoutTemplate);
         User currentUser = userService.getCurrentUser();
         createdWorkoutTemplate.setUser(currentUser);
+        createdWorkoutTemplate.setCreatedAt(Instant.now());
         workoutTemplateRepository.save(createdWorkoutTemplate);
 
         HashMap<Long, Exercise> allExercises = new HashMap<>();
@@ -82,6 +84,27 @@ public class WorkoutTemplateService {
         return workouts.stream().map(this::workoutTemplateToWorkoutTemplateDto).collect(Collectors.toList());
     }
 
+    public WorkoutTemplateDto workoutDtoToWorkoutTemplateDto(WorkoutDto workoutDto) {
+        WorkoutTemplateDto templateDto = new WorkoutTemplateDto();
+        templateDto.setName(workoutDto.getName());
+        templateDto.setDescription("Created automatically after " + workoutDto.getName() + ".");
+
+        int sequenceNumber = 1;
+
+        List<WorkoutTemplateExerciseDto> workoutTemplateExercisesDto = new ArrayList<>();
+        for (ExercisePerformedDto exercisePerformedDto : workoutDto.getExercisesPerformed()) {
+            WorkoutTemplateExerciseDto workoutTemplateExerciseDto = new WorkoutTemplateExerciseDto();
+            workoutTemplateExerciseDto.setSequenceNumber(sequenceNumber++);
+            workoutTemplateExerciseDto.setExerciseId(exercisePerformedDto.getExerciseId());
+            workoutTemplateExerciseDto.setRest(exercisePerformedDto.getRest());
+            workoutTemplateExercisesDto.add(workoutTemplateExerciseDto);
+        }
+
+        templateDto.setTemplateExercises(workoutTemplateExercisesDto);
+
+        return templateDto;
+    }
+
     private WorkoutTemplateDto workoutTemplateToWorkoutTemplateDto(WorkoutTemplate workoutTemplate) {
         WorkoutTemplateDto workoutTemplateDto = new WorkoutTemplateDto();
         workoutTemplateDto.setId(workoutTemplate.getId());
@@ -94,7 +117,7 @@ public class WorkoutTemplateService {
 
             WorkoutTemplateExerciseDto workoutTemplateExerciseDto = new WorkoutTemplateExerciseDto();
             workoutTemplateExerciseDto.setRest(workoutTemplateExercise.getRest());
-            workoutTemplateExerciseDto.setExerciseId(workoutTemplateExercise.getExerciseId());
+            workoutTemplateExerciseDto.setExerciseId(workoutTemplateExercise.getExercise().getId());
             workoutTemplateExerciseDto.setSequenceNumber(workoutTemplateExercise.getSequenceNumber());
 
             workoutTemplateExercisesDto.add(workoutTemplateExerciseDto);
@@ -102,5 +125,46 @@ public class WorkoutTemplateService {
 
         workoutTemplateDto.setTemplateExercises(workoutTemplateExercisesDto);
         return workoutTemplateDto;
+    }
+
+    @Transactional
+    public Long updateWorkoutTemplate(Long id, WorkoutTemplateDto updateRequest) {
+
+        HashMap<Long, Exercise> allExercises = new HashMap<>();
+
+        for (WorkoutTemplateExerciseDto workoutTemplateExerciseDto : updateRequest.getTemplateExercises()) {
+            if (!allExercises.containsKey(workoutTemplateExerciseDto.getExerciseId())) {
+                Exercise currentExercise = exerciseRepository.findById(workoutTemplateExerciseDto.getExerciseId())
+                        .orElseThrow(() -> new ApplicationException(
+                                "Exercise with id " + workoutTemplateExerciseDto.getExerciseId() + " not found"));
+                allExercises.put(workoutTemplateExerciseDto.getExerciseId(), currentExercise);
+            }
+        }
+
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException("Workout template with id " + id + " not found"));
+
+        workoutTemplate.setName(updateRequest.getName());
+        workoutTemplate.setDescription(updateRequest.getDescription());
+        workoutTemplateRepository.save(workoutTemplate);
+
+        WorkoutTemplate createdWorkoutTemplate = workoutTemplateDtoToWorkoutTemplate(updateRequest);
+
+        workoutTemplateExerciseRepository.deleteByWorkoutTemplateId(id);
+
+        for (WorkoutTemplateExercise workoutTemplateExercise : createdWorkoutTemplate.getTemplateExercises()) {
+            workoutTemplateExercise.setTemplate(workoutTemplate);
+            workoutTemplateExercise.setExercise(allExercises.get(workoutTemplateExercise.getExerciseId()));
+            workoutTemplateExerciseRepository.save(workoutTemplateExercise);
+        }
+
+        return workoutTemplate.getId();
+    }
+
+    @Transactional
+    public Long deleteWorkoutTemplate(Long id) {
+        workoutTemplateExerciseRepository.deleteByWorkoutTemplateId(id);
+        workoutTemplateRepository.deleteById(id);
+        return id;
     }
 }

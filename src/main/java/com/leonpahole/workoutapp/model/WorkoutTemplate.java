@@ -28,6 +28,7 @@ public class WorkoutTemplate {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OrderBy("sequenceNumber asc")
     @OneToMany(mappedBy = "template", fetch = FetchType.LAZY)
     private List<WorkoutTemplateExercise> templateExercises;
 

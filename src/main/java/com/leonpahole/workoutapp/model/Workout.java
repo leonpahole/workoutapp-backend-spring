@@ -3,15 +3,7 @@ package com.leonpahole.workoutapp.model;
 import java.time.Instant;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -52,6 +44,7 @@ public class Workout {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @OrderBy("order asc")
     @JoinColumn(name = "workout_id")
     private List<ExercisePerformed> exercisesPerformed;
 }
