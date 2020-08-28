@@ -1,0 +1,36 @@
+version: "3.6"
+
+services:
+  web:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/workoutapp
+    expose:
+      - '8080'
+    ports:
+      - '8080:8080'
+
+  db:
+    image: postgres
+    container_name: workoutapp_db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: workoutapp
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  adm:
+    image: dpage/pgadmin4
+    container_name: workoutapp_dbadm
+    ports:
+      - 8081:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: leon@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: user
+    volumes:
+      - admdata:/var/lib/pgadmin
+
+volumes:
+  dbdata:
+  admdata:
